@@ -9,7 +9,7 @@ import MongoAtlas from './database';
 
 const app = express();
 
-const dbName = 'things'
+const dbName = 'gvacash'
 const database = new MongoAtlas(dbName);
 database.connect();
 
@@ -20,6 +20,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/main', mainRouter);
+app.use('/cash', mainRouter);
 
 module.exports = app;
