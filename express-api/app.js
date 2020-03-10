@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
 import indexRouter from './routes/indexRouter';
-import mainRouter from './routes/mainRouter';
+import cashRouter from './routes/cashRouter';
 import MongoAtlas from './database';
 
 const app = express();
@@ -20,6 +20,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/cash', mainRouter);
+app.use('/cash', cashRouter);
 
 module.exports = app;

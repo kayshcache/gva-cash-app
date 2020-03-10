@@ -9,5 +9,6 @@ import {
 export default express.Router()
   .get('/', readCashFloat)
   .post('/', createCashFloat)
-  .put('/', updateCashFloat)
-  .delete('/', deleteCashFloat);
+  .put('/:cashFloatId', updateCashFloat)
+  .delete('/:cashFloatId', deleteCashFloat);
+

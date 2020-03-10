@@ -18,7 +18,7 @@ export const readCashFloat = (req, res) => {
 
 // U (update):
 export const updateCashFloat = (req, res) => {
-  CashFloat.findOneAndUpdate({_id: req.params.cashFloatId}, req.body, {new: true}, (err, cashFloat) =>
+  CashFloat.findOneAndUpdate({_id: req.params.cashFloatId}, req.body, {new: true, useFindAndModify: false}, (err, cashFloat) =>
     err ? res.send(err) : res.json(cashFloat));
 }
 
@@ -33,7 +33,7 @@ export default class CashFloatController {
   constructor(req, res) {
     this.req = req;
     this.res = res;
-    CashFloat = mongoose.model('CashFloat', FloatSchema);
+    this.cashFloatId = req.params.cashFloatId || null;
   }
 
   create() {
@@ -48,13 +48,12 @@ export default class CashFloatController {
   }
 
   update() {
-    CashFloat.findOneAndUpdate({_id: req.params.cashFloatId}, req.body, {new: true}, (err, cashFloat) =>
+    CashFloat.findOneAndUpdate({_id: this.cashFloatId}, this.req.body, {new: true}, (err, cashFloat) =>
       err ? res.send(err) : res.json(cashFloat));
   }
 
   delete() {
-    const cashFloatId = req.params.cashFloatId;
-    CashFloat.deleteOne({_id: cashFloatId}, (err, cashFloat) =>
-      err ? res.send(err) : res.json({msg: `Deleted Mongo document ID: ${cashFloatId}`}));
+    CashFloat.deleteOne({_id: this.cashFloatId}, (err, cashFloat) =>
+      err ? res.send(err) : res.json({msg: `Deleted Mongo document ID: ${this.cashFloatId}`}));
   }
 }
