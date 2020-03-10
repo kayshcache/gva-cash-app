@@ -18,6 +18,7 @@ export const readCashFloat = (req, res) => {
 
 // U (update):
 export const updateCashFloat = (req, res) => {
+  console.dir(req.body);
   CashFloat.findOneAndUpdate({_id: req.params.cashFloatId}, req.body, {new: true, useFindAndModify: false}, (err, cashFloat) =>
     err ? res.send(err) : res.json(cashFloat));
 }
