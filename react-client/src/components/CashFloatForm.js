@@ -7,34 +7,38 @@ import MoneyInput from './MoneyInput';
 export default class CashFloatForm extends React.Component {
   constructor(props) {
     super(props);
+    this.tokenValues = [0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
     this.state = {
-      cashFloat: {
-	fiveCents: 0,
-	tenCents: 0,
-	twentyCents: 0,
-	fiftyCents: 0,
-	oneDollar: 0,
-	twoDollars: 0,
-	fiveDollars: 0,
-	tenDollars: 0,
-	twentyDollars: 0,
-	fiftyDollars: 0,
-	oneHundredDollars: 0,
-      },
-      cashFloatId: '',
+      fiveCents: 0,
+      tenCents: 0,
+      twentyCents: 0,
+      fiftyCents: 0,
+      oneDollar: 0,
+      twoDollars: 0,
+      fiveDollars: 0,
+      tenDollars: 0,
+      twentyDollars: 0,
+      fiftyDollars: 0,
+      oneHundredDollars: 0,
+      _id: '',
+      total: 0,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  
+
   componentDidMount() {
     axios.get('/cash')
       .then(res => {
 	this.setState(
-	  res.data[0],
+	  res.data.cashFloats[0],
 	);
-	  //cashFloatId: res.data[0]._id,
+	this.setState({
+	  _id: res.data.cashFloats[0]._id,
+	  total: res.data.total,
+	});
+	console.log(res.data);
       })
       .catch(err => console.warn(err));
   }
@@ -42,9 +46,7 @@ export default class CashFloatForm extends React.Component {
   handleChange(event) {
     console.log();
     this.setState({
-      cashFloat: {
-	[event.target.name]: event.target.value,
-      }
+      [event.target.name]: event.target.value,
     });
   }
 
@@ -55,25 +57,26 @@ export default class CashFloatForm extends React.Component {
     }
 
     axios({
-      url: `/cash/${this.state.cashFloatId}`,
+      url: `/cash/${this.state._id}`,
       method: 'put',
       headers: {'Content-Type': 'application/json'},
       data: updatedCash,
     })
       .then(res => console.log(res.data))
       .catch(err => console.warn(err));
-
     event.preventDefault();
   }
 
   render() {
+    const aud = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
     return (
       <form onSubmit={this.handleSubmit}>
-      <input type="submit" value="Submit" />
-      {
-	Object.entries(this.state.cashFloat).filter(token => token[0].length > 5).map(token =>
-	  (<MoneyInput name={token[0]} value={token[1]} onChange={this.handleChange} />))
-      }
+        <p>Total Sum: {aud.format(this.state.total)}</p>
+	<input type="submit" value="Submit" />
+	{
+	  Object.entries(this.state).filter(token => token[0].length > 5).map(token =>
+	    (<MoneyInput key={token[0]} name={token[0]} value={token[1]} onChange={this.handleChange} />))
+	}
       </form>
     );
   }
