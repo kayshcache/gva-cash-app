@@ -11,15 +11,9 @@ export const createCashFloat = (req, res) => {
 }
 
 // R (read):
-export const readCashFloat = (req, res, next) => {
-  CashFloat.find({}, (err, cashFloat) => {
-    cashFloat.total = sumTotal(cashFloat);
-    err ? res.send(err) : res.status(200).json({
-      cashFloats: cashFloat,
-      total: sumTotal(cashFloat)
-    });
-  });
-}
+export const readCashFloat = (req, res, next) =>
+  CashFloat.find({}, (err, cashFloat) =>
+    err ? res.send(err) : res.status(200).json(cashFloat));
 
 // U (update):
 export const updateCashFloat = (req, res) => {
@@ -34,30 +28,6 @@ export const deleteCashFloat = (req, res) => {
   CashFloat.deleteOne({_id: cashFloatId}, (err, cashFloat) =>
     err ? res.send(err) : res.json({msg: `Deleted Mongo document ID: ${cashFloatId}`}));
 }
-
-// HELPER FUNCTIONS
-function sumTotal(cashFloat) {
-  const cf = cashFloat[0];
-  const valueArray = [0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
-  const numberArray = [
-    cf.fiveCents,
-    cf.tenCents,
-    cf.twentyCents,
-    cf.fiftyCents,
-    cf.oneDollar,
-    cf.twoDollars,
-    cf.fiveDollars,
-    cf.tenDollars,
-    cf.twentyDollars,
-    cf.fiftyDollars,
-    cf.oneHundredDollars,
-  ];
-  let sum = valueArray
-    .map((token, i) => token * numberArray[i])
-    .reduce((acc, curr) => acc + curr);
-  return sum;
-}
-
 
 // IGNORE UNTIL LATER MAKING A CLASS OUT OF THIS FILE
 // 
